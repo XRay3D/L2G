@@ -22,6 +22,7 @@ private:
     Ui::MainWindow* ui;
     QGraphicsScene* scene;
     void draw();
+    void draw2();
 
     // QWidget interface
 protected:

@@ -57,7 +57,7 @@ void MainWindow::draw()
 
     PathVector ast(Path(Rect(Point { -0.5, -0.5 }, { +1.0, +1.0 })));
     //    Path p2(Rect(Point { -1.0, -1.0 }, { +0.5, +0.5 }));
-    PathVector bst(Path(Circle(Point { +0.6, +0.6 }, 0.8)));
+    PathVector bst(Path(Ellipse(Circle(Point { +0.6, +0.6 }, 0.8))));
 
     //        PathVector ast(Path(Ellipse(Circle({ 0, 0 }, 1))));
     //        PathVector bst(Path(Ellipse(Circle({ 1, 1 }, 1))));
@@ -104,12 +104,15 @@ void MainWindow::draw()
                         continue;
                     } else if (dynamic_cast<const BezierCurve*>(&v))
                         qDebug() << "BezierCurve";
-                    else if (dynamic_cast<const EllipticalArc*>(&v))
+                    else if (auto a = dynamic_cast<const EllipticalArc*>(&v); a) {
                         qDebug() << "EllipticalArc";
+                        std::cout << a->center() << std::endl;
+                        std::cout << a->initialAngle() * 180 / M_PI << std::endl;
+                        std::cout << a->finalAngle() * 180 / M_PI << std::endl;
+                    } else if (dynamic_cast<const LineSegment*>(&v))
+                        qDebug() << "LineSegment";
                     else if (dynamic_cast<const SBasisCurve*>(&v))
                         qDebug() << "SBasisCurve";
-                    else if (dynamic_cast<const BezierCurve*>(&v))
-                        qDebug() << "BezierCurve";
 
                     //                    for (auto& p1 : v.pointAndDerivatives(0.1, 10)) {
                     for (double j = 0; j <= 1; j += 0.01) {
@@ -137,6 +140,8 @@ void MainWindow::draw()
                 p.append({ p1.x(), p1.y() });
                 continue;
             }
+            if (dynamic_cast<const EllipticalArc*>(&v))
+                qDebug() << "EllipticalArc";
             for (double j = 0; j <= 1; j += 0.01) {
                 auto p1 = v.pointAt(j);
                 p.append({ p1.x(), p1.y() });
@@ -158,9 +163,15 @@ void MainWindow::draw()
                 p.append({ p1.x(), p1.y() });
                 continue;
             }
-            for (double j = 0; j <= 1; j += 0.01) {
-                auto p1 = v.pointAt(j);
-                p.append({ p1.x(), p1.y() });
+            if (auto a = dynamic_cast<const EllipticalArc*>(&v); a) {
+                std::cout << a->center() << std::endl;
+                std::cout << a->initialAngle() * 180 / M_PI << std::endl;
+                std::cout << a->finalAngle() * 180 / M_PI << std::endl;
+                qDebug() << "EllipticalArc";
+                for (double j = 0; j <= 1; j += 0.01) {
+                    auto p1 = v.pointAt(j);
+                    p.append({ p1.x(), p1.y() });
+                }
             }
         }
         scene->addPolygon(p, Qt::NoPen, c % 2 ? Qt::red : Qt::blue)->setPos(0, 6);
@@ -177,6 +188,82 @@ void MainWindow::draw()
     for (auto& pvar : wpoints) { // windingPoints();
         scene->addEllipse({ QPointF { pvar.x(), pvar.y() } + p, QPointF { pvar.x(), pvar.y() } - p }, QPen(Qt::blue, 0.0), QColor(0, 0, 255, 100));
     }
+}
+
+void MainWindow::draw2()
+{
+
+    //    PathVector as, bs;
+    Line ah({ -1, -1 }, { +1, +1 });
+    Line bh({ +1, -2 }, { -1, +1 });
+
+    Line aht({ -10, -10 }, { +10, +10 });
+    Line bht({ +1, -1 }, { -1, +1 });
+
+    PathVector ast(Path(Rect(Point { -0.5, -0.5 }, { +1.0, +1.0 })));
+    PathVector bst(Path(Ellipse(Circle(Point { +0.6, +0.6 }, 0.8))));
+
+    //ast *= ah.transformTo(aht);
+    Affine a;
+    Rotate r(45 * (M_PI / 180));
+    ast *= r;
+
+    int c = 0;
+    for (auto& var : ast) {
+        QPolygonF p;
+        qDebug() << var.size();
+        for (auto& v : var) {
+            if (v.isLineSegment()) {
+                qDebug() << "LineSegment";
+                auto p1 = v.pointAt(0);
+                p.append({ p1.x(), p1.y() });
+                p1 = v.pointAt(1);
+                p.append({ p1.x(), p1.y() });
+                continue;
+            }
+            if (auto a = dynamic_cast<const EllipticalArc*>(&v); a) {
+                std::cout << a->center() << std::endl;
+                std::cout << a->initialAngle() * 180 / M_PI << std::endl;
+                std::cout << a->finalAngle() * 180 / M_PI << std::endl;
+                qDebug() << "EllipticalArc";
+                for (double j = 0; j <= 1; j += 0.01) {
+                    auto p1 = v.pointAt(j);
+                    p.append({ p1.x(), p1.y() });
+                }
+            }
+        }
+        scene->addPolygon(p, Qt::NoPen, c % 2 ? Qt::red : Qt::blue)->setPos(0, 6);
+        ++c;
+    }
+    for (auto& var : bst) {
+        break;
+        QPolygonF p;
+        qDebug() << var.size();
+        for (auto& v : var) {
+            if (v.isLineSegment()) {
+                qDebug() << "LineSegment";
+                auto p1 = v.pointAt(0);
+                p.append({ p1.x(), p1.y() });
+                p1 = v.pointAt(1);
+                p.append({ p1.x(), p1.y() });
+                continue;
+            }
+            if (auto a = dynamic_cast<const EllipticalArc*>(&v); a) {
+                std::cout << a->center() << std::endl;
+                std::cout << a->initialAngle() * 180 / M_PI << std::endl;
+                std::cout << a->finalAngle() * 180 / M_PI << std::endl;
+                qDebug() << "EllipticalArc";
+                for (double j = 0; j <= 1; j += 0.01) {
+                    auto p1 = v.pointAt(j);
+                    p.append({ p1.x(), p1.y() });
+                }
+            }
+        }
+        scene->addPolygon(p, Qt::NoPen, c % 2 ? Qt::red : Qt::blue)->setPos(0, 6);
+        ++c;
+    }
+    //    Timer tm;
+    //    tm.start();
 }
 
 void MainWindow::showEvent(QShowEvent* event)

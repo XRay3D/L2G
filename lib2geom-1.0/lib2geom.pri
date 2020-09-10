@@ -10,15 +10,19 @@ DEFINES += _USE_MATH_DEFINES
 CONFIG(debug, debug|release){
     message("debug")
     TARGET = $$TARGET"_d"
-    LIBS += "-lD:/QtPro/L2G/gsl/x32/Debug/gsl"
-    LIBS += "-lD:/QtPro/L2G/gsl/x32/Debug/gslcblas"
+#    LIBS += "-lD:/QtPro/L2G/gsl/x32/Debug/gsl"
+#    LIBS += "-lD:/QtPro/L2G/gsl/x32/Debug/gslcblas"
+    LIBS += "-lD:/QtPro/L2G/gsl/x64/Debug/gsl"
+    LIBS += "-lD:/QtPro/L2G/gsl/x64/Debug/gslcblas"
 #    LIBS += "-lD:/PRO/QT/gsl-2.5.0/Debug/gsl"
 #    LIBS += "-lD:/PRO/QT/gsl-2.5.0/Debug/gslcblas"
 }else{
     message("release")
     TARGET = $$TARGET"_r"
-    LIBS += "-lD:/QtPro/L2G/gsl/x32/Release/gsl"
-    LIBS += "-lD:/QtPro/L2G/gsl/x32/Release/gslcblas"
+#    LIBS += "-lD:/QtPro/L2G/gsl/x32/Release/gsl"
+#    LIBS += "-lD:/QtPro/L2G/gsl/x32/Release/gslcblas"
+    LIBS += "-lD:/QtPro/L2G/gsl/x64/Release/gsl"
+    LIBS += "-lD:/QtPro/L2G/gsl/x64/Release/gslcblas"
 #    LIBS += "-lD:/PRO/QT/gsl-2.5.0/Release/gsl"
 #    LIBS += "-lD:/PRO/QT/gsl-2.5.0/Release/gslcblas"
 }
